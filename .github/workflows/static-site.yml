@@ -2,7 +2,7 @@ name: Site statique
 
 on:
   schedule:
-    - cron: "30 4 * * *"   # chaque nuit à 04:30 UTC
+    - cron: "15 4 * * *"   # chaque nuit à 04:15 UTC
   workflow_dispatch:
   push:
     branches: [main]
