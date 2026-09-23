@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% set s = secteur %}
+{% block title %}Lobbying dans le secteur « {{ s.name }} » : {{ s.n_orgs|fr }} représentants d'intérêts{% endblock %}
+{% block description %}{{ s.n_orgs|fr }} organisations déclarent une activité de lobbying dans le secteur « {{ s.name }} » au répertoire de la HATVP, pour {{ s.n_actions|fr }} activités déclarées. Classement, thèmes, responsables publics contactés.{% endblock %}
+{% block breadcrumb %}{{ m.breadcrumb([("Secteurs", "/secteurs/"), (s.name, None)]) }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <p class="kicker">Secteur</p>
+  <h1>{{ s.name }}</h1>
+  <div class="actions-row">
+    <a class="btn" href="{{ s.app_url }}" rel="noopener">Explorer et exporter</a>
+  </div>
+</header>
+
+<section class="stats">
+  <div><span class="stat-number">{{ s.n_orgs|fr }}</span><span class="stat-label">organisations</span></div>
+  <div><span class="stat-number">{{ s.n_actions|fr }}</span><span class="stat-label">activités déclarées</span></div>
+</section>
+
+<div class="cols">
+  {{ m.counts("Sur quels sujets", s.domaines) }}
+  {{ m.counts("Qui est contacté", s.responsables) }}
+</div>
+
+<section class="section">
+  <h2>Organisations</h2>
+  {{ m.org_list(s.orgs) }}
+</section>
+{% endblock %}

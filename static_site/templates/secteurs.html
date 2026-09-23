@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Les {{ secteurs|length }} secteurs du lobbying en France (répertoire HATVP){% endblock %}
+{% block description %}Nombre de représentants d'intérêts et d'activités de lobbying déclarées à la HATVP pour chacun des {{ secteurs|length }} secteurs d'activité : énergie, santé, numérique, agriculture, finance…{% endblock %}
+{% block breadcrumb %}{{ m.breadcrumb([("Secteurs", None)]) }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <h1>Secteurs</h1>
+  <p class="lead">Chaque représentant d'intérêts déclare un ou plusieurs secteurs d'intervention.</p>
+</header>
+<div class="table-wrap">
+<table class="table">
+  <thead><tr><th>Secteur</th><th>Organisations</th><th>Activités</th></tr></thead>
+  <tbody>
+  {% for s in secteurs %}
+    <tr><td><a href="{{ s.url|u }}">{{ s.name }}</a></td><td>{{ s.n_orgs|fr }}</td><td>{{ s.n_actions|fr }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

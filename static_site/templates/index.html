@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}HATVP To Table — Le lobbying en France, organisation par organisation{% endblock %}
+{% block description %}Qui fait du lobbying en France, auprès de qui et sur quels sujets ? {{ n_orgs|fr }} représentants d'intérêts et {{ n_actions|fr }} activités déclarées à la HATVP, consultables et téléchargeables en Excel.{% endblock %}
+{% block jsonld %}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "HATVP To Table",
+  "url": site_url ~ "/",
+  "inLanguage": "fr",
+  "description": "Consultation et export des données open data du répertoire des représentants d'intérêts de la HATVP.",
+} | tojson }}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Le lobbying en France, organisation par organisation</h1>
+  <p class="lead">Qui cherche à influencer les décisions publiques, auprès de qui et sur quels sujets.</p>
+  {{ m.search_box() }}
+  <p class="hint">Recherche par thème ou par personne : <a href="{{ app_url }}/" rel="noopener">recherche avancée ↗</a></p>
+</section>
+
+<section class="stats">
+  <div><span class="stat-number">{{ n_orgs|fr }}</span><span class="stat-label">représentants d'intérêts</span></div>
+  <div><span class="stat-number">{{ n_actions|fr }}</span><span class="stat-label">activités déclarées</span></div>
+  <div><span class="stat-number">{{ n_secteurs }}</span><span class="stat-label">secteurs</span></div>
+</section>
+
+<div class="cols">
+  <section class="section">
+    <h2>Les plus actives</h2>
+    {{ m.org_list(top) }}
+    <p class="hint"><a href="{{ '/organisations/'|u }}">Toutes les organisations →</a></p>
+  </section>
+  <section class="section">
+    <h2>Par secteur</h2>
+    <ul class="plain-list">
+      {% for s in secteurs[:12] %}<li><a href="{{ s.url|u }}">{{ s.name }}</a></li>{% endfor %}
+    </ul>
+    <p class="hint"><a href="{{ '/secteurs/'|u }}">Tous les secteurs →</a></p>
+  </section>
+</div>
+
+<section class="section">
+  <h2>Questions fréquentes</h2>
+  <details>
+    <summary>D'où viennent les données ?</summary>
+    <p>Du <a href="https://www.hatvp.fr/le-repertoire/">répertoire des représentants d'intérêts</a> de la HATVP, publié en open data. Depuis 2017, toute organisation qui cherche à influencer une décision publique doit s'y inscrire et déclarer chaque année ses actions. Ce site est mis à jour chaque jour.</p>
+  </details>
+  <details>
+    <summary>Qu'est-ce qu'une « activité » ?</summary>
+    <p>Une fiche déclarée par un représentant d'intérêts : un objet (par exemple « obtenir une modification de la loi de finances »), les responsables publics visés, les types d'actions menées et l'exercice concerné.</p>
+  </details>
+  <details>
+    <summary>Puis-je réutiliser ces données ?</summary>
+    <p>Oui, elles sont publiées sous Licence Ouverte 2.0. Chaque page organisation propose un export Excel, et la <a href="{{ app_url }}/" rel="noopener">recherche avancée</a> permet des exports sur mesure.</p>
+  </details>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ '/static/search.js'|u }}" defer></script>{% endblock %}

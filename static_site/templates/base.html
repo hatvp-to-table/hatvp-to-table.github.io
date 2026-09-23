@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0d1117">
+<title>{% block title %}HATVP To Table{% endblock %}</title>
+<meta name="description" content="{% block description %}Répertoire des lobbyistes en France : actions de lobbying déclarées à la HATVP, par organisation et par secteur. Données open data, export Excel.{% endblock %}">
+<link rel="canonical" href="{{ site_url }}{{ path }}">
+{% block robots %}{% endblock %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HATVP To Table">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="{{ site_url }}{{ path }}">
+<meta property="og:title" content="{{ self.title() }}">
+<meta property="og:description" content="{{ self.description() }}">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="{{ '/static/style.css'|u }}">
+{% block jsonld %}{% endblock %}
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="{{ '/'|u }}">🏛️ HATVP To Table</a>
+    <nav>
+      <a href="{{ '/organisations/'|u }}">Organisations</a>
+      <a href="{{ '/secteurs/'|u }}">Secteurs</a>
+      <a href="{{ app_url }}/" rel="noopener">Recherche avancée ↗</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+{% block breadcrumb %}{% endblock %}
+{% block content %}{% endblock %}
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Données déclarées par les représentants d'intérêts au <a href="https://www.hatvp.fr/le-repertoire/">répertoire de la HATVP</a>, sous <a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence">Licence Ouverte 2.0</a>. Outil indépendant, non affilié à la HATVP. Mis à jour le {{ build_date }}.</p>
+  </div>
+</footer>
+{% block scripts %}{% endblock %}
+</body>
+</html>

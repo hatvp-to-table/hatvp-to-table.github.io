@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Tous les représentants d'intérêts inscrits à la HATVP, de A à Z{% endblock %}
+{% block description %}Liste alphabétique des organisations inscrites au répertoire des représentants d'intérêts de la HATVP, avec le détail de leurs activités de lobbying déclarées.{% endblock %}
+{% block breadcrumb %}{{ m.breadcrumb([("Organisations", None)]) }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <h1>Organisations</h1>
+  {{ m.search_box() }}
+</header>
+<nav class="letters" aria-label="Index alphabétique">
+  {% for k in letters %}<a href="{{ ('/organisations/' ~ k ~ '/')|u }}" title="{{ counts[k] }} organisations">{{ k|upper }}</a>{% endfor %}
+</nav>
+<section class="section">
+  <h2>Les 50 plus actives</h2>
+  {{ m.org_list(top) }}
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ '/static/search.js'|u }}" defer></script>{% endblock %}

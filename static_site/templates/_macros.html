@@ -1,0 +1,54 @@
+{% macro breadcrumb(items) %}
+<nav class="breadcrumb" aria-label="Fil d'Ariane">
+  <a href="{{ '/'|u }}">Accueil</a>
+  {% for label, url in items %}
+  <span aria-hidden="true">›</span>
+  {% if url %}<a href="{{ url|u }}">{{ label }}</a>{% else %}<span>{{ label }}</span>{% endif %}
+  {% endfor %}
+</nav>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"Accueil","item":"{{ site_url }}/"}
+  {%- for label, url in items %},
+  {"@type":"ListItem","position":{{ loop.index + 1 }},"name":{{ label|tojson }}{% if url %},"item":"{{ site_url }}{{ url }}"{% endif %}}
+  {%- endfor %}
+]}
+</script>
+{% endmacro %}
+
+{% macro counts(title, items, limit=5) %}
+{% if items %}
+<section class="section">
+  <h2>{{ title }}</h2>
+  {% set max = items[0][1] %}
+  <ul class="bars">
+    {% for label, n in items[:limit] %}
+    <li>
+      <div class="bar-head"><span class="bar-label" title="{{ label }}">{{ label }}</span><span class="bar-value">{{ n|fr }}</span></div>
+      <div class="bar"><span style="width:{{ (100 * n / max)|round|int }}%"></span></div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro org_list(orgs) %}
+<ul class="org-list">
+  <li class="org-list-head"><span>Organisation</span><span class="count">Activités</span></li>
+  {% for o in orgs %}
+  <li>
+    <a href="{{ o.url|u }}">{{ o.name }}</a>
+    {% if o.sigle %}<span class="muted">{{ o.sigle }}</span>{% endif %}
+    <span class="count">{{ o.n_actions|fr }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}
+
+{% macro search_box(placeholder="Rechercher une organisation : TotalEnergies, MEDEF, FNSEA…") %}
+<div class="search" data-app-url="{{ app_url }}" data-index-url="{{ '/search-index.json'|u }}">
+  <input type="search" id="org-search" placeholder="{{ placeholder }}" autocomplete="off" aria-label="Rechercher une organisation">
+  <ul id="org-results" class="search-results" hidden></ul>
+</div>
+{% endmacro %}

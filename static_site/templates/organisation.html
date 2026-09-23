@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% set o = org %}
+{% block title %}{{ o.name }}{% if o.sigle %} ({{ o.sigle }}){% endif %} : lobbying déclaré à la HATVP{% endblock %}
+{% block description %}{{ o.name }} : {{ o.n_actions|fr }} activité{{ "s" if o.n_actions != 1 }} de lobbying déclarée{{ "s" if o.n_actions != 1 }} au répertoire de la HATVP{% if o.exercices %} ({{ o.exercices[-1].periode }} – {{ o.exercices[0].periode }}){% endif %}. Responsables publics contactés, thèmes, dépenses, dirigeants. Export Excel gratuit.{% endblock %}
+{% block jsonld %}
+<script type="application/ld+json">{{ o.jsonld|tojson }}</script>
+{% endblock %}
+
+{% block breadcrumb %}{{ m.breadcrumb([("Organisations", "/organisations/"), (o.name, None)]) }}{% endblock %}
+
+{% block content %}
+<article>
+<header class="page-head">
+  <p class="kicker">{{ o.category or "Représentant d'intérêts" }}</p>
+  <h1>{{ o.name }}{% if o.sigle %} <span class="muted">{{ o.sigle }}</span>{% endif %}</h1>
+  {% if o.cessation %}<p class="notice">Inscription cessée le {{ o.cessation }}</p>{% endif %}
+  {% if not o.n_actions %}<p class="notice">Aucune activité de lobbying déclarée à ce jour</p>{% endif %}
+  <p class="meta-line">
+    {% if o.ville %}<span>{{ o.ville }}{% if o.pays and o.pays != "FRANCE" %} ({{ o.pays }}){% endif %}</span>{% endif %}
+    {% if o.site_web %}<a href="{{ o.site_web }}" rel="nofollow noopener">{{ o.site_web|replace("https://", "")|replace("http://", "")|trim("/") }}</a>{% endif %}
+    {% if o.ident %}<span>{{ o.type_ident or "Identifiant" }} {{ o.ident }}</span>{% endif %}
+  </p>
+  <div class="actions-row">
+    <a class="btn" href="{{ o.app_url }}" rel="noopener" title="L'outil peut mettre jusqu'à une minute à démarrer s'il était en veille">Explorer dans l'outil</a>
+    {% if o.excel_available %}<a href="{{ o.excel }}" download>Télécharger l'Excel</a>{% endif %}
+    {% if o.hatvp_url %}<a href="{{ o.hatvp_url }}" rel="noopener">Fiche HATVP ↗</a>{% endif %}
+  </div>
+</header>
+
+<section class="stats">
+  <div><span class="stat-number">{{ o.n_actions|fr }}</span><span class="stat-label">activités déclarées</span></div>
+  <div><span class="stat-number">{{ o.exercices|length }}</span><span class="stat-label">exercices</span></div>
+  {% if o.last_depense %}
+  <div><span class="stat-number stat-small">{{ o.last_depense.depense }}</span><span class="stat-label">dépenses {{ o.last_depense.periode }}</span></div>
+  {% endif %}
+  {% if o.first_pub %}
+  <div><span class="stat-number stat-small">{{ o.first_pub }}</span><span class="stat-label">inscription</span></div>
+  {% endif %}
+</section>
+
+{% if o.secteurs %}
+<section class="section">
+  <h2>Secteurs</h2>
+  <p class="inline-list">{% for s in o.secteurs %}<a href="{{ s.url|u }}">{{ s.name }}</a>{% endfor %}</p>
+</section>
+{% endif %}
+
+{% if o.responsables or o.domaines or o.types %}
+<div class="cols">
+  {{ m.counts("Qui est contacté", o.responsables) }}
+  {{ m.counts("Sur quels sujets", o.domaines) }}
+  {{ m.counts("Comment", o.types) }}
+</div>
+{% endif %}
+
+{% if o.latest %}
+<section class="section">
+  <h2>Dernières activités</h2>
+  <ul class="activities">
+    {% for a in o.latest %}
+    <li>
+      <p class="activity-objet">{{ a.objet }}</p>
+      <p class="activity-meta">{{ a.periode }}{% if a.donneur %} · pour {{ a.donneur }}{% endif %}</p>
+    </li>
+    {% endfor %}
+  </ul>
+  {% if o.n_actions > o.latest|length %}
+  <p class="hint">{{ o.latest|length }} sur {{ o.n_actions|fr }} ·
+    <a href="{{ o.app_url }}" rel="noopener">tout explorer</a>{% if o.excel_available %} ou <a href="{{ o.excel }}" download>télécharger l'Excel</a>{% endif %}</p>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if o.exercices %}
+<section class="section">
+  <h2>Par exercice</h2>
+  <div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>Exercice</th><th>Activités</th><th>Dépenses</th><th><abbr title="Personnes consacrées à la représentation d'intérêts, en équivalent temps plein">ETP</abbr></th></tr></thead>
+    <tbody>
+    {% for e in o.exercices %}
+      <tr><td>{{ e.periode }}</td><td>{{ e.n|fr }}</td><td>{{ e.depense or "—" }}</td><td>{{ e.etp or "—" }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <details>
+    <summary>Identité et coordonnées</summary>
+    <table class="table">
+      <tbody>
+      {% if o.denomination != o.name %}<tr><td>Dénomination</td><td>{{ o.denomination }}</td></tr>{% endif %}
+      {% if o.ident %}<tr><td>{{ o.type_ident or "Identifiant" }}</td><td>{{ o.ident }}</td></tr>{% endif %}
+      {% if o.adresse or o.ville %}<tr><td>Adresse</td><td>{{ o.adresse }}{% if o.ville %}, {{ o.ville }}{% endif %}{% if o.pays and o.pays != "FRANCE" %} ({{ o.pays }}){% endif %}</td></tr>{% endif %}
+      {% if o.site_web %}<tr><td>Site web</td><td><a href="{{ o.site_web }}" rel="nofollow noopener">{{ o.site_web }}</a></td></tr>{% endif %}
+      {% if o.linkedin %}<tr><td>LinkedIn</td><td><a href="{{ o.linkedin }}" rel="nofollow noopener">{{ o.linkedin }}</a></td></tr>{% endif %}
+      {% if o.twitter %}<tr><td>X / Twitter</td><td><a href="{{ o.twitter }}" rel="nofollow noopener">{{ o.twitter }}</a></td></tr>{% endif %}
+      </tbody>
+    </table>
+  </details>
+  {% if o.people %}
+  <details>
+    <summary>Dirigeants et collaborateurs <span class="count">{{ o.people|length }}</span></summary>
+    <table class="table">
+      <tbody>
+      {% for p in o.people %}<tr><td>{{ p.nom }}</td><td>{{ p.fonction or p.statut }}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </details>
+  {% endif %}
+  {% if o.clients %}
+  <details>
+    <summary>Clients déclarés <span class="count">{{ o.clients|length }}</span></summary>
+    <p>Organisations pour le compte desquelles {{ o.name }} déclare agir.</p>
+    <ul class="plain-list columns">
+      {% for c in o.clients %}<li>{% if c.url %}<a href="{{ c.url|u }}">{{ c.name }}</a>{% else %}{{ c.name }}{% endif %}</li>{% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+  {% if o.cabinets %}
+  <details>
+    <summary>Cabinets mandatés <span class="count">{{ o.cabinets|length }}</span></summary>
+    <p>Représentants d'intérêts qui déclarent {{ o.name }} parmi leurs clients.</p>
+    <ul class="plain-list columns">
+      {% for c in o.cabinets %}<li><a href="{{ c.url|u }}">{{ c.name }}</a></li>{% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</section>
+</article>
+{% endblock %}

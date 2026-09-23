@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Représentants d'intérêts commençant par {{ letter|upper }} — répertoire HATVP{% endblock %}
+{% block description %}{{ orgs|length }} organisations commençant par « {{ letter|upper }} » inscrites au répertoire des représentants d'intérêts de la HATVP.{% endblock %}
+{% block breadcrumb %}{{ m.breadcrumb([("Organisations", "/organisations/"), (letter|upper, None)]) }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <h1>Organisations : {{ letter|upper }}</h1>
+</header>
+<nav class="letters" aria-label="Index alphabétique">
+  {% for k in letters %}<a href="{{ ('/organisations/' ~ k ~ '/')|u }}"{% if k == letter %} aria-current="page"{% endif %}>{{ k|upper }}</a>{% endfor %}
+</nav>
+{{ m.org_list(orgs) }}
+{% endblock %}

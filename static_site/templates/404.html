@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Page introuvable — HATVP To Table{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Page introuvable</h1>
+  <p class="lead">Cette organisation a peut-être changé de nom ou quitté le répertoire. Essayez de la rechercher :</p>
+  {{ m.search_box() }}
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ '/static/search.js'|u }}" defer></script>{% endblock %}

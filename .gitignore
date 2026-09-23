@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+static_site/dist/
+.claude/
+.DS_Store
