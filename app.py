@@ -68,7 +68,7 @@ def show_preview(title, items):
 # ─── SEO ──────────────────────────────────────────────────────────────────────
 
 # ⚠️ Mets à jour cette URL si tu configures un domaine personnalisé
-SITE_URL = "https://hatvp-explorer.onrender.com"
+SITE_URL = "https://hatvp-to-table.onrender.com"
 
 st.markdown(f"""
 <link rel="canonical" href="{SITE_URL}">

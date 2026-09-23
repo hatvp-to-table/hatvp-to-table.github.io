@@ -36,8 +36,11 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT.parent))
 import hatvp  # noqa: E402
 
-SITE_URL = (os.environ.get("SITE_URL") or "http://localhost:8000").rstrip("/")
-APP_URL  = (os.environ.get("APP_URL") or "https://hatvp-explorer.onrender.com").rstrip("/")
+def env_url(name, default):
+    return (os.environ.get(name, "").strip().strip("\"'") or default).rstrip("/")
+
+SITE_URL = env_url("SITE_URL", "http://localhost:8000")
+APP_URL  = env_url("APP_URL", "https://hatvp-to-table.onrender.com")
 BASE_PATH = urlparse(SITE_URL).path.rstrip("/")
 HATVP_FICHE_URL = "https://www.hatvp.fr/fiche-organisation/?organisation={}"
 
